@@ -1,37 +1,44 @@
 #!/bin/bash
 
-# 시스템 업데이트 및 필요한 패키지 설치
+# Install logging monitor. The monitor will automatically pick up logs sent to
+# syslog.
+curl -s "https://storage.googleapis.com/signals-agents/logging/google-fluentd-install.sh" | bash
+service google-fluentd restart &
+
+# Install dependencies from apt
 apt-get update
-apt-get install -y curl git ufw
+apt-get install -yq ca-certificates git build-essential supervisor psmisc
 
-# Node.js 설치 (16.x 버전)
-curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-apt-get install -y nodejs
+# Install nodejs
+mkdir /opt/nodejs
+curl https://nodejs.org/dist/v16.14.0/node-v16.14.0-linux-x64.tar.gz | tar xvzf - -C /opt/nodejs --strip-components=1
+ln -s /opt/nodejs/bin/node /usr/bin/node
+ln -s /opt/nodejs/bin/npm /usr/bin/npm
 
-# 작업 디렉토리로 이동
-mkdir -p /opt/monolith-app
-cd /opt/monolith-app
+# Get the application source code from the Google Cloud Storage bucket.
+mkdir /fancy-store
+gsutil -m cp -r gs://fancy-store-[DEVSHELL_PROJECT_ID]/monolith-to-microservices/microservices/* /fancy-store/
 
-# 현재 프로젝트 코드 클론
-git clone https://github.com/GoogleCloudPlatform/monolith-to-microservices.git
-cd monolith-to-microservices/monolith
-
-# 의존성 설치
+# Install app dependencies.
+cd /fancy-store/
 npm install
 
-# React 프론트엔드 빌드
-npm run build
+# Create a nodeapp user. The application will run as this user.
+useradd -m -d /home/nodeapp nodeapp
+chown -R nodeapp:nodeapp /opt/app
 
-# 환경 변수 설정
-export PORT=8080
+# Configure supervisor to run the node app.
+cat >/etc/supervisor/conf.d/node-app.conf << EOF
+[program:nodeapp]
+directory=/fancy-store
+command=npm start
+autostart=true
+autorestart=true
+user=nodeapp
+environment=HOME="/home/nodeapp",USER="nodeapp",NODE_ENV="production"
+stdout_logfile=syslog
+stderr_logfile=syslog
+EOF
 
-# PM2 설치 및 애플리케이션 실행
-npm install -g pm2
-pm2 start npm --name "monolith" -- start
-
-# PM2 시작 스크립트 설정
-pm2 startup
-pm2 save
-
-# 방화벽 규칙 설정
-ufw allow 8080/tcp
+supervisorctl reread
+supervisorctl update
