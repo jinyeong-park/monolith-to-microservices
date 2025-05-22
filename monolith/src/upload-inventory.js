@@ -19,6 +19,7 @@ const productsData = require('../data/products.json');
 const inventoryData = productsData.products.map(product => ({
   productId: product.id,
   productName: product.name,
+  productPicture: product.picture,
   quantity: Math.floor(Math.random() * 100) + 10 // 10-109 사이 랜덤 수량
 }));
 
