@@ -30,3 +30,5 @@ terraform.tfstate.backup
 *.tfstate.*
 crash.log
 crash.*.log
+
+service-account-key.json

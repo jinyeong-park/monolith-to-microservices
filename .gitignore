@@ -7,3 +7,5 @@
 .DS_Store
 
 /logs
+
+service-account-key.json

@@ -15,21 +15,8 @@ limitations under the License.
 */
 const express = require("express");
 const path = require("path");
-const admin = require('firebase-admin');
-
 const app = express();
 const port = process.env.PORT || 8080;
-
-// Firebase Admin SDK 초기화
-const serviceAccount = require("../service-account-key.json");
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  projectId: 'project-460422'
-});
-
-const db = admin.firestore();
-// default 데이터베이스 사용
-const inventoryDb = db;
 
 //Load orders and products for pseudo database
 const orders = require("../data/orders.json").orders;
@@ -37,7 +24,6 @@ const products = require("../data/products.json").products;
 
 //Serve website
 app.use(express.static(path.join(__dirname, "..", "public")));
-app.use(express.json()); // JSON 파싱 미들웨어 추가
 
 //Get all products
 app.get("/service/products", (req, res) => res.json(products));
@@ -54,46 +40,6 @@ app.get("/service/orders", (req, res) => res.json(orders));
 app.get("/service/orders/:id", (req, res) =>
   res.json(orders.find((order) => order.id === req.params.id))
 );
-
-// ===== INVENTORY API 추가 =====
-
-// 모든 재고 조회
-app.get("/service/inventory", async (req, res) => {
-  try {
-    const snapshot = await inventoryDb.collection('inventory').get();
-    const inventory = [];
-    
-    snapshot.forEach(doc => {
-      inventory.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
-    
-    res.json(inventory);
-  } catch (error) {
-    console.error('Error getting inventory:', error);
-    res.status(500).json({ error: 'Failed to get inventory' });
-  }
-});
-
-// 특정 제품 재고 조회
-app.get("/service/inventory/:productId", async (req, res) => {
-  try {
-    const doc = await inventoryDb.collection('inventory').doc(req.params.productId).get();
-    
-    if (doc.exists) {
-      res.json({ id: doc.id, ...doc.data() });
-    } else {
-      res.status(404).json({ error: 'Product not found in inventory' });
-    }
-  } catch (error) {
-    console.error('Error getting product inventory:', error);
-    res.status(500).json({ error: 'Failed to get product inventory' });
-  }
-});
-
-
 
 //Client side routing fix on page refresh or direct browsing to non-root directory
 app.get("/*", (req, res) => {

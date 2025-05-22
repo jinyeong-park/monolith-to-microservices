@@ -38,6 +38,7 @@ import Home from "../../pages/Home";
 import Products from "../../pages/Products";
 import Orders from "../../pages/Orders";
 import OrderDetails from "../../pages/OrderDetails";
+import Inventory from "../../pages/Inventory";
 import NotFound from "../../pages/NotFound";
 
 const drawerWidth = 200;
@@ -115,6 +116,14 @@ export default function ClippedDrawer() {
             >
               <ListItemText primary="Orders" />
             </ListItem>
+            <ListItem
+              component={NavLink}
+              sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+              activeClassName="Mui-selected"
+              to="/inventory"
+            >
+              <ListItemText primary="Inventory" />
+            </ListItem>
           </List>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -131,6 +140,9 @@ export default function ClippedDrawer() {
             </Route>
             <Route path="/orders">
               <Orders />
+            </Route>
+            <Route path="/inventory">
+              <Inventory />
             </Route>
             <Route>
               <NotFound />
