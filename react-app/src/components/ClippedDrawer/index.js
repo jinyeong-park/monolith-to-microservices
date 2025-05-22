@@ -55,7 +55,7 @@ export default function ClippedDrawer() {
         >
           <Toolbar>
             <img 
-              src="https://storage.cloud.google.com/image-assets-buckets/logo/fancy_store_logo.png" 
+              src="https://storage.cloud.google.com/fancystore-assets-bucket/fancy_store_logo.png" 
               alt="Fancy Store Logo"
               style={{ 
                 width: "35px", 
