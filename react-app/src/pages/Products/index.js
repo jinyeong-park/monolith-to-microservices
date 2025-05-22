@@ -1,12 +1,9 @@
 /*
 Copyright 2019 Google LLC
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     https://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,10 +20,12 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import Popularproducts from "../PopularProducts";
 
 export default function Products() {
   const [hasErrors, setErrors] = useState(false);
   const [products, setProducts] = useState([]);
+  const [recommendations, setRecommendations] = useState([]); // 추가된 상태
 
   async function fetchData() {
     try {
@@ -38,8 +37,20 @@ export default function Products() {
     }
   }
 
+  async function fetchRecommendations() {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_RECOMMEND_URL}?type=popular&limit=4`);
+      const data = await response.json();
+      setRecommendations(data.recommendations || []);
+    } catch (err) {
+      console.error('추천 상품 로드 실패:', err);
+      setRecommendations([]);
+    }
+  }
+
   useEffect(() => {
     fetchData();
+    fetchRecommendations();
   }, []);
 
   return (
@@ -58,15 +69,15 @@ export default function Products() {
         </Paper>
       )}
       {!hasErrors && (
-        <Grid
-          sx={{ maxWidth: "1000px", margin: "0 auto" }}
-          container
-          spacing={3}
-          justify="flex-start"
-          alignItems="stretch"
-        >
-          {products.map((product) => {
-            return (
+        <>
+          <Grid
+            sx={{ maxWidth: "1000px", margin: "0 auto" }}
+            container
+            spacing={3}
+            justify="flex-start"
+            alignItems="stretch"
+          >
+            {products.map((product) => (
               <Grid key={product.id} item md={4} xs={12}>
                 <Card>
                   <CardMedia
@@ -81,9 +92,13 @@ export default function Products() {
                   </CardContent>
                 </Card>
               </Grid>
-            );
-          })}
-        </Grid>
+            ))}
+          </Grid>
+          
+          <Box sx={{ mt: 4, mb: 2 }}>
+          <Popularproducts />
+          </Box>
+        </>
       )}
     </Box>
   );

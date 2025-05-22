@@ -40,6 +40,7 @@ import Orders from "../../pages/Orders";
 import OrderDetails from "../../pages/OrderDetails";
 import Inventory from "../../pages/Inventory";
 import NotFound from "../../pages/NotFound";
+import PopularProducts from "../../pages/PopularProducts";
 
 const drawerWidth = 200;
 
@@ -52,6 +53,7 @@ export default function ClippedDrawer() {
           position="fixed"
           sx={{
             zIndex: (theme) => theme.zIndex.drawer + 1,
+            backgroundColor: "#667eea"  // 배경색 추가
           }}
         >
           <Toolbar>
@@ -124,6 +126,15 @@ export default function ClippedDrawer() {
             >
               <ListItemText primary="Inventory" />
             </ListItem>
+            <ListItem
+              component={NavLink}
+              exact
+              sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+              activeClassName="Mui-selected"
+              to="/popular-products"
+            >
+              <ListItemText primary="Popular Products" />
+            </ListItem>
           </List>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -143,6 +154,9 @@ export default function ClippedDrawer() {
             </Route>
             <Route path="/inventory">
               <Inventory />
+            </Route>
+            <Route path="/popular-products">
+              <PopularProducts />
             </Route>
             <Route>
               <NotFound />

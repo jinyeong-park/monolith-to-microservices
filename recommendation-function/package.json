@@ -1,0 +1,17 @@
+{
+    "name": "product-recommendation-function",
+    "version": "1.0.0",
+    "description": "Product recommendation Cloud Function",
+    "main": "index.js",
+    "scripts": {
+      "start": "functions-framework --target=recommendProducts --port=8084",
+      "dev": "functions-framework --target=recommendProducts --port=8084",
+      "test": "curl \"http://localhost:8084?type=popular&limit=3\""
+    },
+    "dependencies": {
+      "@google-cloud/functions-framework": "^3.0.0"
+    },
+    "engines": {
+      "node": ">=18.0.0"
+    }
+  }
