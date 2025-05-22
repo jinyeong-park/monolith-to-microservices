@@ -1,169 +1,244 @@
-# 실행 방법
+# Product Recommendation Service
 
+_This Node.js-based service provides product recommendations based on popularity, category, price, or specific product IDs._ It runs locally on _port 8084_ and can be deployed to Google Cloud Functions.
+
+## Table of Contents
+
+- [Running Locally](#running-locally)
+- [Test Commands](#test-commands)
+- [Browser Testing](#browser-testing)
+- [Deploying to GCP Cloud Functions](#deploying-to-gcp-cloud-functions)
+- [Managing the Function](#managing-the-function)
+- [Notes and Prerequisites](#notes-and-prerequisites)
+
+## Running Locally
+
+_To start the service locally_, run:
+
+```bash
 npm start
+```
 
-# 테스트 명령어들 (포트 8084)
+_This launches the application on `http://localhost:8084`._
 
-bash# 1. 인기 상품 추천
-curl "http://localhost:8084?type=popular&limit=3"
+### Running Tests
 
-# 2. 빈티지 카테고리 + 가격 필터
+_To execute tests_ using the `test` script in `package.json`:
 
-curl "http://localhost:8084?category=vintage&maxPrice=100"
-
-# 3. 특정 상품 기반 카테고리 추천
-
-curl "http://localhost:8084?type=category&productId=OLJCESPC7Z&limit=3"
-
-# 4. 특정 상품 기반 가격대 추천
-
-curl "http://localhost:8084?type=price&productId=1YMWWN1N4O&limit=3"
-
-# 5. 사진 카테고리 필터
-
-curl "http://localhost:8084?category=photography&limit=2"
-
-# 6. 간편 테스트 (package.json의 test 스크립트 사용)
-
+```bash
 npm test
+```
 
-# 브라우저에서도 테스트 가능
+## Test Commands
 
-브라우저에서 다음 URL들을 직접 방문해서 JSON 응답을 확인할 수 있습니다:
+_Test the service locally_ on _port 8084_ using these `curl` commands:
 
-http://localhost:8084?type=popular&limit=3
-http://localhost:8084?category=vintage&maxPrice=100
-http://localhost:8084?type=category&productId=OLJCESPC7Z&limit=3
+### 1. Popular Products
 
-# GCP Cloud Functions에 배포하는 단계별 가이드.
+```bash
+curl "http://localhost:8084?type=popular&limit=3"
+```
 
-1. GCP 프로젝트 설정 및 gcloud CLI 설정
+### 2. Vintage Category with Price Filter
 
-# gcloud CLI 인증
+```bash
+curl "http://localhost:8084?category=vintage&maxPrice=100"
+```
 
+### 3. Category-Based Recommendation
+
+```bash
+curl "http://localhost:8084?type=category&productId=OLJCESPC7Z&limit=3"
+```
+
+### 4. Price-Based Recommendation
+
+```bash
+curl "http://localhost:8084?type=price&productId=1YMWWN1N4O&limit=3"
+```
+
+### 5. Photography Category Filter
+
+```bash
+curl "http://localhost:8084?category=photography&limit=2"
+```
+
+## Browser Testing
+
+_You can test the service directly in a browser_ by visiting these URLs to view _JSON responses_:
+
+- _Popular Products_: `http://localhost:8084?type=popular&limit=3`
+- _Vintage Category with Price Filter_: `http://localhost:8084?category=vintage&maxPrice=100`
+- _Category-Based Recommendation_: `http://localhost:8084?type=category&productId=OLJCESPC7Z&limit=3`
+
+## Deploying to GCP Cloud Functions
+
+### 1. Set Up GCP Project and gcloud CLI
+
+```bash
+# _Authenticate gcloud CLI_
 gcloud auth login
 
-# 프로젝트 설정 (본인의 GCP 프로젝트 ID로 변경)
-
+# _Set your GCP project_ (replace YOUR_PROJECT_ID with your actual project ID)
 gcloud config set project YOUR_PROJECT_ID
 
-# 현재 프로젝트 확인
-
+# _Verify current project_
 gcloud config get-value project
 
-# Cloud Functions API 활성화
-
+# _Enable required APIs_
 gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
+```
 
-# 프로젝트 설정 (본인의 GCP 프로젝트 ID로 변경)
+### 2. Verify Deployment Files
 
-gcloud config set project YOUR_PROJECT_ID
+_Ensure the following files are in your project directory_:
 
-# 현재 프로젝트 확인
+- _`index.js`_ (recommendation function code)
+- _`package.json`_ (configured for port 8084)
+- _`node_modules/`_ (generated via `npm install`)
 
-gcloud config get-value project
+_Check files_:
 
-# Cloud Functions API 활성화
+```bash
+ls -la
+```
 
-gcloud services enable cloudfunctions.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
+### 3. Deploy to Cloud Functions
 
-2. 배포 준비 확인
-   현재 디렉토리에 다음 파일들이 있는지 확인:
-   ls -la
+_Deploy the function with default settings_:
 
-# 다음 파일들이 있어야 함:
-
-# - index.js (추천 함수 코드)
-
-# - package.json (포트 8084 설정된 버전)
-
-# - node_modules/ (npm install로 생성됨)
-
-3. Cloud Functions 배포
-   bash# 기본 배포 (HTTP 트리거, 인증 불필요)
-   gcloud functions deploy recommendProducts \
-    --runtime nodejs18 \
-    --trigger-http \
-    --allow-unauthenticated \
-    --entry-point recommendProducts \
-    --source . \
-    --timeout 60s \
-    --memory 256MB
-
-# 또는 더 상세한 설정으로 배포
-
+```bash
 gcloud functions deploy recommendProducts \
- --runtime nodejs18 \
- --trigger-http \
- --allow-unauthenticated \
- --entry-point recommendProducts \
- --source . \
- --timeout 60s \
- --memory 256MB \
- --region us-central1 \
- --max-instances 10 4. 배포 상태 확인
-bash# 배포된 함수 정보 확인
+  --runtime nodejs18 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point recommendProducts \
+  --source . \
+  --timeout 60s \
+  --memory 256MB
+```
+
+_For more specific settings_:
+
+```bash
+gcloud functions deploy recommendProducts \
+  --runtime nodejs18 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point recommendProducts \
+  --source . \
+  --timeout 60s \
+  --memory 256MB \
+  --region us-central1 \
+  --max-instances 10
+```
+
+_To update to Node.js 20_:
+
+```bash
+gcloud functions deploy recommendProducts \
+  --runtime nodejs20 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point recommendProducts \
+  --source . \
+  --timeout 60s \
+  --memory 256MB
+```
+
+### 4. Verify Deployment
+
+_Check the deployed function's details_:
+
+```bash
 gcloud functions describe recommendProducts
+```
 
-# nodejs20으로 업데이트 함수 방법
+_Get the function's URL_:
 
-gcloud functions deploy recommendProducts \
- --runtime nodejs20 \
- --trigger-http \
- --allow-unauthenticated \
- --entry-point recommendProducts \
- --source . \
- --timeout 60s \
- --memory 256MB
-
-# 함수 URL 확인
-
+```bash
 gcloud functions describe recommendProducts --format="value(httpsTrigger.url)"
+```
 
-5. 배포된 함수 테스트
-   배포 완료 후 URL이 다음과 같은 형식으로 제공됩니다:
-   https://REGION-PROJECT_ID.cloudfunctions.net/recommendProducts
-   테스트 명령어:
-   bash# 배포된 함수 URL을 변수로 설정 (실제 URL로 변경)
-   FUNCTION_URL="https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/recommendProducts"
+### 5. Test Deployed Function
 
-# 1. 인기 상품 추천 테스트
+_After deployment, the function URL will be in the format_:
 
+```
+https://REGION-YOUR_PROJECT_ID.cloudfunctions.net/recommendProducts
+```
+
+_Set the URL as a variable_ (replace with your actual URL):
+
+```bash
+FUNCTION_URL="https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/recommendProducts"
+```
+
+_Test commands for the deployed function_:
+
+#### 1. Popular Products
+
+```bash
 curl "${FUNCTION_URL}?type=popular&limit=3"
+```
 
-# 2. 카테고리 필터링 테스트
+#### 2. Category Filtering
 
+```bash
 curl "${FUNCTION_URL}?category=vintage&maxPrice=100"
+```
 
-# 3. 특정 상품 기반 추천 테스트
+#### 3. Category-Based Recommendation
 
+```bash
 curl "${FUNCTION_URL}?type=category&productId=OLJCESPC7Z&limit=3"
+```
 
-# 4. 가격대 추천 테스트
+#### 4. Price-Based Recommendation
 
-curl "${FUNCTION_URL}?type=price&productId=1YMWWN1N4O&limit=3" 6. 로그 확인
-bash# 함수 로그 실시간 확인
+```bash
+curl "${FUNCTION_URL}?type=price&productId=1YMWWN1N4O&limit=3"
+```
+
+## Managing the Function
+
+### View Logs
+
+_Monitor logs in real-time_:
+
+```bash
 gcloud functions logs tail recommendProducts
+```
 
-# 최근 로그 확인
+_View recent logs_:
 
-gcloud functions logs read recommendProducts --limit 50 7. 함수 관리 명령어
-bash# 함수 삭제 (필요시)
-gcloud functions delete recommendProducts
+```bash
+gcloud functions logs read recommendProducts --limit 50
+```
 
-# 함수 업데이트 (코드 수정 후)
+### Update or Delete Function
 
+_Update the function after code changes_:
+
+```bash
 gcloud functions deploy recommendProducts \
- --runtime nodejs18 \
- --trigger-http \
- --allow-unauthenticated \
- --entry-point recommendProducts \
- --source .
-주의사항
+  --runtime nodejs18 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --entry-point recommendProducts \
+  --source .
+```
 
-프로젝트 ID 확인: gcloud config get-value project로 올바른 프로젝트가 설정되었는지 확인
-API 활성화: Cloud Functions와 Cloud Build API가 활성화되어 있어야 함
-권한 확인: 배포할 권한이 있는 계정으로 로그인했는지 확인
-결제 계정: GCP 프로젝트에 결제 계정이 연결되어 있어야 함
+_Delete the function if needed_:
+
+```bash
+gcloud functions delete recommendProducts
+```
+
+## Notes and Prerequisites
+
+- _Project ID_: Verify the correct project is set with `gcloud config get-value project`.
+- _APIs_: Ensure Cloud Functions and Cloud Build APIs are enabled.
+- _Permissions_: Confirm you are logged in with an account that has deployment permissions.
+- _Billing_: A billing account must be linked to the GCP project.
