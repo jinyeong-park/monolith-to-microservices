@@ -54,7 +54,24 @@ export default function ClippedDrawer() {
           }}
         >
           <Toolbar>
-            <Typography variant="h6" noWrap>
+            <img 
+              src="https://storage.cloud.google.com/image-assets-buckets/logo/fancy_store_logo.png" 
+              alt="Fancy Store Logo"
+              style={{ 
+                width: "35px", 
+                height: "35px", 
+                marginRight: "15px",
+                verticalAlign: "middle"
+              }}
+            />
+            <Typography 
+              variant="h6" 
+              noWrap 
+              sx={{ 
+                display: "inline-flex",
+                alignItems: "center"
+              }}
+            >
               Fancy Store
             </Typography>
           </Toolbar>
