@@ -32,6 +32,10 @@ export default function Inventory() {
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const CACHE_DURATION = 5 * 60 * 1000; // 5분
 
+
+  // fetchInventory 함수 시작 부분에 임시로 추가
+console.log('Environment URL:', process.env.REACT_APP_INVENTORY_URL);
+
   async function fetchInventory() {
     // 캐시가 유효한 경우 재호출하지 않음
     if (lastFetchTime && (Date.now() - lastFetchTime < CACHE_DURATION)) {
@@ -40,7 +44,9 @@ export default function Inventory() {
     }
     
     try {
-      const response = await fetch(`http://localhost:8080/service/inventory`);
+      // const response = await fetch(`http://localhost:8080/service/inventory`);
+      const inventoryUrl = `${process.env.REACT_APP_INVENTORY_URL}`;
+      const response = await fetch(inventoryUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
