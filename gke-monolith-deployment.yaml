@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gke-monolith
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monolith
+  template:
+    metadata:
+      labels:
+        app: monolith
+    spec:
+      containers:
+        - name: gke-monolith
+          image: gcr.io/project-460422/gke-monolith:1.0.0
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NODE_ENV
+              value: "production"
