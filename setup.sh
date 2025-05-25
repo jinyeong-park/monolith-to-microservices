@@ -18,7 +18,6 @@ set -eEo pipefail
 
 if [ -z "$CLOUD_SHELL" ]; then
   printf "Checking for required npm version...\n"
-
   npm install -g npm > /dev/null 2>&1
   printf "Completed.\n\n"
 
@@ -38,13 +37,18 @@ cd ./monolith
 npm install
 printf "Completed.\n\n"
 
-printf "Installing microservices dependencies...\n"
-cd ../microservices
-npm install
-printf "Completed.\n\n"
+if [ -d ../microservices ]; then
+  printf "Installing microservices dependencies...\n"
+  cd ../microservices
+  npm install
+  printf "Completed.\n\n"
+else
+  printf "Skipping microservices — directory not found.\n\n"
+  cd ..
+fi
 
 printf "Installing React app dependencies...\n"
-cd ../react-app
+cd ./react-app
 npm install
 printf "Completed.\n\n"
 
