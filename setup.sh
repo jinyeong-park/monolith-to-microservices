@@ -23,8 +23,8 @@ if [ -z "$CLOUD_SHELL" ]; then
 
   printf "Setting up NVM...\n"
   export NVM_DIR="/usr/local/nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
   printf "Completed.\n\n"
   
   printf "Updating nodeJS version...\n"
@@ -35,6 +35,7 @@ fi
 printf "Installing monolith dependencies...\n"
 cd ./monolith
 npm install
+npm install firebase-admin --save
 printf "Completed.\n\n"
 
 if [ -d ../microservices ]; then
