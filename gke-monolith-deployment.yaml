@@ -12,9 +12,10 @@ spec:
       labels:
         app: monolith
     spec:
+      serviceAccountName: k8s-firestore-sa # 여기 추가!
       containers:
         - name: gke-monolith
-          image: gcr.io/project-460422/gke-monolith:1.0.0
+          image: gcr.io/project-460422/gke-monolith:2.0.0
           resources:
             requests:
               memory: "128Mi"
