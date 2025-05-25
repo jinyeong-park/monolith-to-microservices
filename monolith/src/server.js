@@ -20,6 +20,11 @@ const admin = require('firebase-admin');
 const app = express();
 const port = process.env.PORT || 8080;
 
+// GCP 환경에서는 기본 인증 사용
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
+
 // CORS 설정 추가
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
