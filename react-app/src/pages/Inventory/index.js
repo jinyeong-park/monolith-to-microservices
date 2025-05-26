@@ -10,7 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Table,
@@ -30,14 +30,13 @@ export default function Inventory() {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastFetchTime, setLastFetchTime] = useState(null);
-  const CACHE_DURATION = 5 * 60 * 1000; // 5분
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+  // Temporarily added at the beginning of fetchInventory function
+  console.log('Environment URL:', process.env.REACT_APP_INVENTORY_URL);
 
-  // fetchInventory 함수 시작 부분에 임시로 추가
-console.log('Environment URL:', process.env.REACT_APP_INVENTORY_URL);
-
-  async function fetchInventory() {
-    // 캐시가 유효한 경우 재호출하지 않음
+  const fetchInventory = useCallback(async () => {
+    // Don't refetch if cache is valid
     if (lastFetchTime && (Date.now() - lastFetchTime < CACHE_DURATION)) {
       setLoading(false);
       return;
@@ -53,18 +52,18 @@ console.log('Environment URL:', process.env.REACT_APP_INVENTORY_URL);
       const inventoryData = await response.json();
       setInventory(inventoryData);
       setLastFetchTime(Date.now());
-      setErrors(false); // 성공 시 에러 상태 초기화
+      setErrors(false); // Reset error state on success
       setLoading(false);
     } catch (err) {
-      console.error('에러:', err);
+      console.error('Error:', err);
       setErrors(true);
       setLoading(false);
     }
-  }
+  }, [lastFetchTime, CACHE_DURATION]);
 
   useEffect(() => {
     fetchInventory();
-  }, []);
+  }, [fetchInventory]);
 
   if (loading) {
     return (
@@ -130,7 +129,7 @@ console.log('Environment URL:', process.env.REACT_APP_INVENTORY_URL);
                       </Card>
                     ) : (
                       <Typography variant="body2" color="text.secondary">
-                        이미지 없음
+                        No image
                       </Typography>
                     )}
                   </TableCell>
