@@ -38,7 +38,6 @@ import Home from "../../pages/Home";
 import Products from "../../pages/Products";
 import Orders from "../../pages/Orders";
 import OrderDetails from "../../pages/OrderDetails";
-import Inventory from "../../pages/Inventory";
 import NotFound from "../../pages/NotFound";
 import PopularProducts from "../../pages/PopularProducts";
 
@@ -118,14 +117,7 @@ export default function ClippedDrawer() {
             >
               <ListItemText primary="Orders" />
             </ListItem>
-            <ListItem
-              component={NavLink}
-              sx={{ color: "rgba(0, 0, 0, 0.54)" }}
-              activeClassName="Mui-selected"
-              to="/inventory"
-            >
-              <ListItemText primary="Inventory" />
-            </ListItem>
+
             <ListItem
               component={NavLink}
               exact

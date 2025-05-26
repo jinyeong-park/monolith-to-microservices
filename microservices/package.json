@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run frontend\" \"npm run products\" \"npm run orders\" \"npm run inventory\"",
+    "start": "concurrently \"npm run frontend\" \"npm run products\" \"npm run orders\"",
     "frontend": "node ./src/frontend/server.js",
     "products": "node ./src/products/server.js",
     "orders": "node ./src/orders/server.js",
-    "inventory": "node ./src/inventory/server.js",
     "install-all": "npm-recursive-install"
   },
   "keywords": [],
