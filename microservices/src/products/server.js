@@ -2,7 +2,7 @@ const express = require("express");
 const admin = require('firebase-admin');
 
 const app = express();
-const port = process.env.PORT || 8083;
+const port = process.env.PORT || 8082;
 
 // CORS configuration
 app.use((req, res, next) => {
