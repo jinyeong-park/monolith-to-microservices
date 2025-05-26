@@ -46,7 +46,7 @@ const db = admin.firestore();
 const inventoryDb = db;
 
 //Load orders and products for pseudo database
-const orders = require("../data/orders.json").orders;
+// const orders = require("../data/orders.json").orders;
 const products = require("../data/products.json").products;
 
 //Serve website
@@ -61,13 +61,13 @@ app.get("/api/products/:id", (req, res) =>
   res.json(products.find((product) => product.id === req.params.id))
 );
 
-//Get all orders
-app.get("/api/orders", (req, res) => res.json(orders));
+// //Get all orders
+// app.get("/api/orders", (req, res) => res.json(orders));
 
-//Get orders by ID
-app.get("/service/orders/:id", (req, res) =>
-  res.json(orders.find((order) => order.id === req.params.id))
-);
+// //Get orders by ID
+// app.get("/service/orders/:id", (req, res) =>
+//   res.json(orders.find((order) => order.id === req.params.id))
+// );
 
 // ===== INVENTORY API 추가 =====
 
