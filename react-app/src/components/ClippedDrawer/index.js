@@ -144,9 +144,6 @@ export default function ClippedDrawer() {
             <Route path="/orders">
               <Orders />
             </Route>
-            <Route path="/inventory">
-              <Inventory />
-            </Route>
             <Route path="/popular-products">
               <PopularProducts />
             </Route>
