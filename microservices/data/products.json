@@ -1,0 +1,76 @@
+{
+    "products": [
+        {
+            "id": "OLJCESPC7Z",
+            "name": "Vintage Typewriter",
+            "description": "This typewriter looks good in your living room.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/typewriter.jpg",
+            "cost": 67.99,
+            "categories": ["vintage"]
+        },
+        {
+            "id": "66VCHSJNUP",
+            "name": "Vintage Camera Lens",
+            "description": "You won't have a camera to use it and it probably doesn't work anyway.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/camera-lens.jpg",
+            "cost": 12.49,
+            "categories": ["photography", "vintage"]
+        },
+        {
+            "id": "1YMWWN1N4O",
+            "name": "Home Barista Kit",
+            "description": "Always wanted to brew coffee with Chemex and Aeropress at home?",
+            "picture": "https://storage.cloud.google.com/fancystore-products/barista-kit.jpg",
+            "cost": 124,
+            "categories": ["cookware"]
+        },
+        {
+            "id": "L9ECAV7KIM",
+            "name": "Terrarium",
+            "description": "This terrarium will looks great in your white painted living room.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/terrarium.jpg",
+            "cost": 36.45,
+            "categories": ["gardening"]
+        },
+        {
+            "id": "2ZYFJ3GM2N",
+            "name": "Film Camera",
+            "description": "This camera looks like it's a film camera, but it's actually digital.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/film-camera.jpg",
+            "cost": 2245,
+            "categories": ["photography", "vintage"]
+        },
+        {
+            "id": "0PUK6V6EV0",
+            "name": "Vintage Record Player",
+            "description": "It still works.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/record-player.jpg",
+            "cost": 65.50,
+            "categories": ["music", "vintage"]
+        },
+        {
+            "id": "LS4PSXUNUM",
+            "name": "Metal Camping Mug",
+            "description": "You probably don't go camping that often but this is better than plastic cups.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/camp-mug.jpg",
+            "cost": 24.33,
+            "categories": ["cookware"]
+        },
+        {
+            "id": "9SIQT8TOJO",
+            "name": "City Bike",
+            "description": "This single gear bike probably cannot climb the hills of San Francisco.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/city-bike.jpg",
+            "cost": 789.50,
+            "categories": ["cycling"]
+        },
+        {
+            "id": "6E92ZMYYFZ",
+            "name": "Air Plant",
+            "description": "Have you ever wondered whether air plants need water? Buy one and figure out.",
+            "picture": "https://storage.cloud.google.com/fancystore-products/air-plant.jpg",
+            "cost": 12.30,
+            "categories": ["gardening"]
+        }
+    ]
+}
