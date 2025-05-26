@@ -1,78 +1,50 @@
 const express = require("express");
-const path = require("path");
 const admin = require('firebase-admin');
 
 const app = express();
-// Change the default port to 8082 to avoid conflict with frontend (8080)
-const port = process.env.PORT || 8082;
+const port = process.env.PORT || 8083;
 
-// CORS 설정 추가
+// CORS configuration
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 
-// Firebase Admin SDK 초기화
-// const serviceAccount = require("../service-account-key.json");
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   projectId: 'project-460422'
-// });
-
-// GCP 환경에서는 기본 인증 사용
+// Firebase Admin SDK initialization
+// For GCP environment, use default authentication
 admin.initializeApp({
   credential: admin.credential.applicationDefault()
 });
 
 const db = admin.firestore();
-// default 데이터베이스 사용
 const inventoryDb = db;
 
-//Load orders and products for pseudo database
-// const orders = require("../data/orders.json").orders;
-const products = require("./data/products.json").products;
+app.use(express.json());
 
-//Serve website
-app.use(express.static(path.join(__dirname, "..", "public")));
-app.use(express.json()); // JSON 파싱 미들웨어 추가
-
-//Get all products
-app.get("/api/products", (req, res) => res.json(products));
-
-//Get products by ID
-app.get("/api/products/:id", (req, res) =>
-  res.json(products.find((product) => product.id === req.params.id))
-);
-
-// //Get all orders
-// app.get("/api/orders", (req, res) => res.json(orders));
-
-// //Get orders by ID
-// app.get("/service/orders/:id", (req, res) =>
-//   res.json(orders.find((order) => order.id === req.params.id))
-// );
-
-// ===== INVENTORY API 추가 =====
-
-// 모든 재고 조회
+// Cache configuration
 let cachedInventory = null;
 let lastFetchTime = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5분
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+// Get all inventory
 app.get("/api/inventory", async (req, res) => {
   try {
-    // 캐시가 있고 유효한 경우
+    console.log('Inventory API called');
+    
+    // Use cache if valid
     if (cachedInventory && lastFetchTime && (Date.now() - lastFetchTime < CACHE_DURATION)) {
+      console.log('Returning cached inventory');
       return res.json(cachedInventory);
     }
 
+    console.log('Fetching inventory from Firestore');
     const snapshot = await inventoryDb.collection('inventory').get();
     const inventory = [];
 
     if (snapshot.empty) {
-    
-      return res.json([]); // 데이터가 없을 경우 빈 배열 반환
+      console.log('No inventory data found');
+      return res.json([]); // Return empty array if no data
     }
     
     snapshot.forEach(doc => {
@@ -88,6 +60,7 @@ app.get("/api/inventory", async (req, res) => {
     cachedInventory = inventory;
     lastFetchTime = Date.now();
     
+    console.log(`Returning ${inventory.length} inventory items`);
     res.json(inventory);
   } catch (error) {
     console.error('Error getting inventory:', error);
@@ -98,7 +71,7 @@ app.get("/api/inventory", async (req, res) => {
   }
 });
 
-// 특정 제품 재고 조회
+// Get specific product inventory
 app.get("/api/inventory/:productId", async (req, res) => {
   try {
     const doc = await inventoryDb.collection('inventory').doc(req.params.productId).get();
@@ -126,18 +99,14 @@ app.get("/api/inventory/:productId", async (req, res) => {
   }
 });
 
-//Client side routing fix on page refresh or direct browsing to non-root directory
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"), (err) => {
-    if (err) {
-      res.status(500).send(err);
-    }
-  });
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", service: "inventory", port: port });
 });
 
-//Start the server
+// Start the server
 app.listen(port, () =>
-  console.log(`Products microservice listening on port ${port}!`)
+  console.log(`Inventory microservice listening on port ${port}!`)
 );
 
 /*
